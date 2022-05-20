@@ -46,7 +46,7 @@ const Join = () => {
   };
 
   const submitCode = () => {
-    socket.emit('join-room', { room: code });
+    socket.emit('join-room', { room: code, language: lang });
     speak('');
   };
 
@@ -72,9 +72,21 @@ const Join = () => {
     setCode(evt.target.value);
   };
 
-  const langChangeHandler = lang => {
+  const langChangeHandler = evt => {
+    const lang = evt.target.value;
     setLang(lang);
+    if (joined && code) {
+      socket.emit('language-change', { room: code, language: lang });
+    }
   };
+
+  const languageDropdown = (
+    <Select width="auto" value={lang} onChange={langChangeHandler} zIndex={105}>
+      <option value="es">Spanish 🇪🇸 </option>
+      <option value="fr">French 🇫🇷</option>
+      <option value="zh">Chinese 🇨🇳</option>
+    </Select>
+  );
 
   if (!joined) {
     return (
@@ -101,6 +113,7 @@ const Join = () => {
               )}
             </InputRightElement>
           </InputGroup>
+          {languageDropdown}
         </VStack>
       </CenterWrapper>
     );
@@ -121,16 +134,7 @@ const Join = () => {
           <Text color="teal.400" fontWeight="bold" fontSize="xl">
             Connected to room {code}
           </Text>
-          <Select
-            width="auto"
-            placeholder="Language"
-            value="es"
-            onChange={langChangeHandler}
-          >
-            <option value="es">Spanish 🇪🇸 </option>
-            <option value="option2">Option 2</option>
-            <option value="option3">Option 3</option>
-          </Select>
+          {languageDropdown}
         </VStack>
       </Box>
 

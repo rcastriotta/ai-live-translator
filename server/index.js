@@ -40,13 +40,21 @@ io.on("connection", (socket) => {
     streamingClient.stream(data);
   });
 
-  socket.on("join-room", ({ room }) => {
+  socket.on("join-room", ({ room, language }) => {
     const validRoom = db.get(room);
     if (validRoom) {
       socket.join(room);
+      if (language) validRoom.clientData[socket.id] = { language };
       socket.emit("room-joined", "success");
     } else {
       socket.emit("invalid-room", "error");
+    }
+  });
+
+  socket.on("language-change", ({ room, language }) => {
+    const validRoom = db.get(room);
+    if (validRoom) {
+      if (language) validRoom.clientData[socket.id] = { language };
     }
   });
 });

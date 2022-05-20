@@ -20,7 +20,8 @@ const translateText = async (text, language = "es") => {
   };
 
   const { data } = await axios.request(options);
-  if (!data.data.translations?.length) return "";
+  if (!data.data.translations?.length)
+    throw new Error("Translation error occurred");
   return data.data.translations[0].translatedText;
 };
 
@@ -29,12 +30,13 @@ module.exports = class StreamingClient {
     this.accessToken = accessToken;
     this.io = io;
     this.room = room;
+    this.clientData = {};
   }
 
   start() {
     this.revAiStreamingClient = new RevAiStreamingClient(
       this.accessToken,
-      new AudioConfig("audio/x-wav")
+      new AudioConfig("audio/x-flac", undefined, 16000)
     );
 
     this.revAiStreamingClient.on("close", (code, reason) => {
@@ -54,17 +56,44 @@ module.exports = class StreamingClient {
       this.io.to(this.room).emit("streaming-connected", connectionMessage);
     });
 
-    this.revStream = this.revAiStreamingClient.start();
+    this.revStream = this.revAiStreamingClient.start({ language: "en" });
     this.revStream.on("data", async (data) => {
       this.io.to(this.room).emit("transcript", data);
       if (data.type === "final") {
         try {
-          const str = data.elements.reduce((a, b) => {
-            a += `${b.value}`;
-            return a;
-          }, " ");
-          const translation = await translateText(str, "es");
-          this.io.to(this.room).emit("translation", translation);
+          const activeClients = [
+            ...(this.io.sockets.adapter.rooms.get(this.room) || []),
+          ];
+          const languages = [
+            ...new Set(
+              activeClients
+                .filter((c) => !!this.clientData[c])
+                .map((c) => this.clientData[c].language)
+            ),
+          ];
+
+          const langSortObj = {};
+
+          for (const [id, value] of Object.entries(this.clientData)) {
+            if (!langSortObj[value.language]) langSortObj[value.language] = [];
+            langSortObj[value.language].push(id);
+          }
+
+          console.log(langSortObj);
+          console.log(languages);
+
+          await Promise.all(
+            languages.map(async (lang) => {
+              const str = data.elements.reduce((a, b) => {
+                a += `${b.value}`;
+                return a;
+              }, " ");
+              const translation = await translateText(str, lang);
+              langSortObj[lang].forEach((id) => {
+                this.io.to(id).emit("translation", translation);
+              });
+            })
+          );
         } catch (err) {
           console.log(err);
         }
