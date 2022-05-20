@@ -26,11 +26,12 @@ const translateText = async (text, language = "es") => {
 };
 
 module.exports = class StreamingClient {
-  constructor(accessToken, io, room) {
+  constructor(accessToken, io, room, speakerLanguage = "en") {
     this.accessToken = accessToken;
     this.io = io;
     this.room = room;
     this.clientData = {};
+    this.speakerLanguage = speakerLanguage;
   }
 
   start() {
@@ -56,7 +57,9 @@ module.exports = class StreamingClient {
       this.io.to(this.room).emit("streaming-connected", connectionMessage);
     });
 
-    this.revStream = this.revAiStreamingClient.start({ language: "en" });
+    this.revStream = this.revAiStreamingClient.start({
+      language: this.speakerLanguage,
+    });
     this.revStream.on("data", async (data) => {
       this.io.to(this.room).emit("transcript", data);
       if (data.type === "final") {
@@ -88,7 +91,10 @@ module.exports = class StreamingClient {
                 a += `${b.value}`;
                 return a;
               }, " ");
-              const translation = await translateText(str, lang);
+              const translation =
+                lang === this.speakerLanguage
+                  ? str
+                  : await translateText(str, lang);
               langSortObj[lang].forEach((id) => {
                 this.io.to(id).emit("translation", translation);
               });

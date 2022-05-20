@@ -26,6 +26,8 @@ const CenterWrapper = ({ children }) => (
   </Box>
 );
 
+const voices = window.speechSynthesis.getVoices();
+
 const Join = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [code, setCode] = useState('');
@@ -36,9 +38,7 @@ const Join = () => {
   const socket = useSocket();
 
   const speak = text => {
-    const voice = window.speechSynthesis
-      .getVoices()
-      .find(v => v.lang.includes(lang));
+    const voice = voices.find(v => v.lang.includes(lang));
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.voice = voice;
     utterance.lang = lang;
@@ -85,6 +85,7 @@ const Join = () => {
       <option value="es">Spanish 🇪🇸 </option>
       <option value="fr">French 🇫🇷</option>
       <option value="zh">Chinese 🇨🇳</option>
+      <option value="en">English 🇺🇸</option>
     </Select>
   );
 
