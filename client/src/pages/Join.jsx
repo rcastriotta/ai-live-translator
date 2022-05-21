@@ -9,9 +9,13 @@ import {
   InputGroup,
   Select,
   InputRightElement,
+  HStack,
+  IconButton,
 } from '@chakra-ui/react';
+import { MdVolumeUp, MdVolumeOff } from 'react-icons/md';
 
 import useSocket from '../hooks/useSocket';
+import { Icon } from '@chakra-ui/icons';
 
 const CenterWrapper = ({ children }) => (
   <Box
@@ -32,6 +36,7 @@ const Join = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [code, setCode] = useState('');
   const [joined, setJoined] = useState(false);
+  const [muted, setMuted] = useState(false);
   const [translation, setTranslation] = useState(null);
   const [codeError, setCodeError] = useState(false);
   const [lang, setLang] = useState('es');
@@ -52,7 +57,7 @@ const Join = () => {
 
   useSocket('translation', data => {
     setTranslation(data);
-    speak(data);
+    if (!muted) speak(data);
   });
 
   useSocket('room-joined', data => {
@@ -135,7 +140,15 @@ const Join = () => {
           <Text color="teal.400" fontWeight="bold" fontSize="xl">
             Connected to room {code}
           </Text>
-          {languageDropdown}
+          <HStack>
+            {languageDropdown}
+            <IconButton
+              onClick={() => setMuted(prev => !prev)}
+              zIndex={105}
+              aria-label="Add to friends"
+              icon={<Icon w={5} h={5} as={muted ? MdVolumeOff : MdVolumeUp} />}
+            />
+          </HStack>
         </VStack>
       </Box>
 

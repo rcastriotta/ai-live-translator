@@ -37,7 +37,7 @@ module.exports = class StreamingClient {
   start() {
     this.revAiStreamingClient = new RevAiStreamingClient(
       this.accessToken,
-      new AudioConfig("audio/x-flac", undefined, 16000)
+      new AudioConfig("audio/x-wav")
     );
 
     this.revAiStreamingClient.on("close", (code, reason) => {
@@ -82,22 +82,23 @@ module.exports = class StreamingClient {
             langSortObj[value.language].push(id);
           }
 
-          console.log(langSortObj);
-          console.log(languages);
-
           await Promise.all(
             languages.map(async (lang) => {
-              const str = data.elements.reduce((a, b) => {
-                a += `${b.value}`;
-                return a;
-              }, " ");
-              const translation =
-                lang === this.speakerLanguage
-                  ? str
-                  : await translateText(str, lang);
-              langSortObj[lang].forEach((id) => {
-                this.io.to(id).emit("translation", translation);
-              });
+              try {
+                const str = data.elements.reduce((a, b) => {
+                  a += `${b.value}`;
+                  return a;
+                }, " ");
+                const translation =
+                  lang === this.speakerLanguage
+                    ? str
+                    : await translateText(str, lang);
+                langSortObj[lang].forEach((id) => {
+                  this.io.to(id).emit("translation", translation);
+                });
+              } catch (err) {
+                console.log(err);
+              }
             })
           );
         } catch (err) {
