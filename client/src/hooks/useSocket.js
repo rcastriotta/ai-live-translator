@@ -1,7 +1,12 @@
 import { useEffect } from 'react';
 import io from 'socket.io-client';
+import isDev from '../utils/devDetect';
 
-const socket = io(process.env.REACT_APP_SERVER_BASE_URL);
+const socket = io(
+  isDev
+    ? process.env.REACT_APP_DEV_SERVER
+    : process.env.REACT_APP_SERVER_BASE_URL
+);
 socket.on('connect', () => {
   console.log(`socket connected (${socket.id})`);
 });

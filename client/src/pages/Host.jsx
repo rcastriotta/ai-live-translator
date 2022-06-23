@@ -49,9 +49,7 @@ const Host = () => {
     if (isMounted.current) return;
     isMounted.current = true;
     (async () => {
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_SERVER_BASE_URL}/api/room/create`
-      );
+      const { data } = await axios.post('/api/room/create');
       socket.emit('join-room', { room: data });
       setRoom(data);
       roomRef.current = data;
@@ -71,22 +69,16 @@ const Host = () => {
   });
 
   const startStreaming = async () => {
-    await axios.post(
-      `${process.env.REACT_APP_SERVER_BASE_URL}/api/stream/start`,
-      {
-        room,
-      }
-    );
+    await axios.post('/api/stream/start', {
+      room,
+    });
     console.log('started');
   };
 
   const stopStreaming = async () => {
-    await axios.post(
-      `${process.env.REACT_APP_SERVER_BASE_URL}/api/stream/stop`,
-      {
-        room,
-      }
-    );
+    await axios.post('/api/stream/stop', {
+      room,
+    });
     audioStreamer.stopStreaming();
   };
 

@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Host from './pages/Host';
 import Join from './pages/Join';
 import './App.css';
+import Room from './pages/Room';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/host" element={<Host />} />
           <Route path="/join" element={<Join />} />
+          <Route path="/room/:code" element={<Room />} />
         </Routes>
         {/*<Footer />*/}
       </Router>
