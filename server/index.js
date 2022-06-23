@@ -1,6 +1,5 @@
 const env = require("dotenv").config();
 const express = require("express");
-const http = require("http");
 const { RevAiApiClient } = require("revai-node-sdk");
 const { Server } = require("socket.io");
 const StreamingClient = require("./lib/StreamingClient");
@@ -8,16 +7,11 @@ const cors = require("cors");
 const routes = require("./routes");
 const db = require("./db");
 const app = express();
-//const server = http.createServer(app);
+const http = require("http").Server(app);
 app.use(cors());
 
 // add cors to be able to connect to the websocket locally
-const io = new Server(app, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST"],
-  },
-});
+const io = require("socket.io")(http);
 
 const access_token = process.env.REVAI_ACCESS_TOKEN;
 const mediaPath = process.env.MEDIA_PATH || "public/media/";
@@ -85,6 +79,6 @@ app.use(express.static("build"));
 app.use("/media", express.static(mediaPath));
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
+http.listen(PORT, () => {
   console.log(`Server listening at ${PORT}`);
 });
