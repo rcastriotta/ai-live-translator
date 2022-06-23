@@ -37,7 +37,7 @@ module.exports = class StreamingClient {
   start() {
     this.revAiStreamingClient = new RevAiStreamingClient(
       this.accessToken,
-      new AudioConfig("audio/x-wav")
+      new AudioConfig("audio/x-raw", "interleaved", 48000, "S16LE", 2)
     );
 
     this.revAiStreamingClient.on("close", (code, reason) => {
@@ -58,7 +58,9 @@ module.exports = class StreamingClient {
     });
 
     this.revStream = this.revAiStreamingClient.start({
-      language: this.speakerLanguage,
+      //language: this.speakerLanguage,
+      language: "en",
+      removeDisfluencies: true,
     });
     this.revStream.on("data", async (data) => {
       this.io.to(this.room).emit("transcript", data);

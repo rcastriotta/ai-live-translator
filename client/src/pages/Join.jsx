@@ -155,7 +155,7 @@ const Join = () => {
       <CenterWrapper>
         <Box maxWidth="90%" textAlign="center">
           <Text fontSize="3xl">
-            {translation || 'Waiting for transcription...'}
+            {translation || 'Waiting for translation...'}
           </Text>
         </Box>
       </CenterWrapper>
