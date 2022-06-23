@@ -38,7 +38,7 @@ io.on("connection", (socket) => {
     streamingClient.stream(data);
   });
 
-  socket.on("join-room", ({ room, language }) => {
+  socket.on("join-room", ({ room, language = "es" }) => {
     const validRoom = db.get(room);
     if (validRoom) {
       socket.join(room);
