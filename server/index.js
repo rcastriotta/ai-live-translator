@@ -8,7 +8,7 @@ const cors = require("cors");
 const routes = require("./routes");
 const db = require("./db");
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 const server = http.createServer(app);
 app.use(cors());
 
@@ -86,5 +86,5 @@ app.use(express.static("build"));
 app.use("/media", express.static(mediaPath));
 
 server.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
+  console.log(`Server listening at ${port}`);
 });
