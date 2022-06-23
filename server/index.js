@@ -8,12 +8,11 @@ const cors = require("cors");
 const routes = require("./routes");
 const db = require("./db");
 const app = express();
-const port = process.env.PORT || 3001;
-const server = http.createServer(app);
+//const server = http.createServer(app);
 app.use(cors());
 
 // add cors to be able to connect to the websocket locally
-const io = new Server(server, {
+const io = new Server(app, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
@@ -85,6 +84,7 @@ app.use("/api/job", routes.job);
 app.use(express.static("build"));
 app.use("/media", express.static(mediaPath));
 
-server.listen(port, () => {
-  console.log(`Server listening at ${port}`);
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server listening at ${PORT}`);
 });
