@@ -8,7 +8,7 @@ import axios from 'axios';
 import isDev from './utils/devDetect';
 
 axios.defaults.baseURL = isDev
-  ? 'http://localhost:3001'
+  ? process.env.REACT_APP_DEV_SERVER
   : process.env.REACT_APP_SERVER_BASE_URL;
 
 const container = document.getElementById('root');

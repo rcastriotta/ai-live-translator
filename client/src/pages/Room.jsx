@@ -35,7 +35,6 @@ const Room = () => {
   };
 
   useEffect(() => {
-    console.log(code);
     socket.emit('join-room', { room: code, language: lang });
   }, [code, socket]);
 
