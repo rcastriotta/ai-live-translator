@@ -107,12 +107,24 @@ const Host = () => {
             justifyContent="center"
           >
             {audioStreamer.connected && audioStreamer.streaming ? (
-              <Button onClick={stopStreaming} maxWidth="400px" width="100%">
-                Stop
+              <Button
+                size="lg"
+                fontSize="md"
+                onClick={stopStreaming}
+                maxWidth="400px"
+                width="100%"
+              >
+                Stop Recording
               </Button>
             ) : (
-              <Button onClick={startStreaming} maxWidth="400px" width="100%">
-                Start
+              <Button
+                size="lg"
+                fontSize="md"
+                onClick={startStreaming}
+                maxWidth="400px"
+                width="100%"
+              >
+                Start Recording
               </Button>
             )}
           </Stack>
