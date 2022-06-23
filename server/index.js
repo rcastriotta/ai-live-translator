@@ -20,6 +20,7 @@ const mediaPath = process.env.MEDIA_PATH || "public/media/";
 const asyncClient = new RevAiApiClient(access_token);
 const streamingClient = new StreamingClient(access_token, io);
 
+console.log("ran");
 // The socket connections and messages that will be listened for
 io.on("connection", (socket) => {
   console.log(`connection made (${socket.id})`);
