@@ -11,7 +11,12 @@ const http = require("http").Server(app);
 app.use(cors());
 
 // add cors to be able to connect to the websocket locally
-const io = require("socket.io")(http);
+const io = require("socket.io")(http, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 
 const access_token = process.env.REVAI_ACCESS_TOKEN;
 const mediaPath = process.env.MEDIA_PATH || "public/media/";
