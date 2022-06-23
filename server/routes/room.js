@@ -15,12 +15,20 @@ const makeId = (length) => {
 
 router.post("/create", (req, res) => {
   const room = makeId(6);
-  console.log(room);
   db.set(
     room,
     new StreamingClient(process.env.REVAI_ACCESS_TOKEN, req.io, room)
   );
   res.status(200).send(room);
+});
+
+router.post("/checkCode", (req, res) => {
+  const { room } = req.body;
+  let isAvailable = false;
+  if (db.get(room)) {
+    isAvailable = true;
+  }
+  res.status(200).send({ isAvailable });
 });
 
 module.exports = router;
