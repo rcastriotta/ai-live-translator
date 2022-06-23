@@ -37,7 +37,7 @@ module.exports = class StreamingClient {
   start() {
     this.revAiStreamingClient = new RevAiStreamingClient(
       this.accessToken,
-      new AudioConfig("audio/x-raw", "interleaved", 48000, "S16LE", 2)
+      new AudioConfig("audio/x-flac")
     );
 
     this.revAiStreamingClient.on("close", (code, reason) => {
