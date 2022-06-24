@@ -48,7 +48,7 @@ const Room = () => {
   });
 
   useSocket('invalid-room', data => {
-    navigate(`../join`, { replace: true });
+    navigate(`../`, { replace: true });
   });
 
   const langChangeHandler = evt => {
