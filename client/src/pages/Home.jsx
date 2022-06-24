@@ -29,7 +29,7 @@ const Home = () => {
         .then(({ data }) => data);
       setIsLoading(false);
       if (isAvailable) {
-        navigate(`../room/${code}`, { replace: true });
+        navigate(`../room/${code}`, { replace: false });
       } else {
         setCodeError(true);
       }
